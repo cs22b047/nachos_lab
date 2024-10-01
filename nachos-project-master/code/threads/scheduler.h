@@ -8,17 +8,18 @@
 
 #ifndef SCHEDULER_H
 #define SCHEDULER_H
-
+#include <queue>
 #include "copyright.h"
 #include "list.h"
 #include "thread.h"
-#include <queue>
 // The following class defines the scheduler/dispatcher abstraction --
 // the data structures and operations needed to keep track of which
 // thread is running, and which threads are ready but not running.
 
+
 class Scheduler {
    public:
+	priority_queue<pair<int,Thread*>> mq;
     Scheduler();   // Initialize list of ready threads
     ~Scheduler();  // De-allocate ready list
 
@@ -36,7 +37,7 @@ class Scheduler {
 
    private:
     List<Thread*>* readyList;  // queue of threads that are ready to run,
-    priority_queue<pair<int,Thread *>> myHeap;               // but not running
+                               // but not running
     Thread* toBeDestroyed;     // finishing thread to be destroyed
                                // by the next thread that runs
 };

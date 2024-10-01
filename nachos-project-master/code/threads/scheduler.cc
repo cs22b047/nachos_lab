@@ -52,8 +52,7 @@ Scheduler::~Scheduler() { delete readyList; }
 void Scheduler::ReadyToRun(Thread *thread) {
     ASSERT(kernel->interrupt->getLevel() == IntOff);
     DEBUG(dbgThread, "Putting thread on ready list: " << thread->getName());
-
-    myHeap.push({thread->prnum,thread});
+    mq.push({thread->prnum,thread});
     thread->setStatus(READY);
     readyList->Append(thread);
 }
@@ -72,11 +71,12 @@ Thread *Scheduler::FindNextToRun() {
     if (readyList->IsEmpty()) {
         return NULL;
     } else {
-	Thread* newThread = myHeap.top().second;
-	myHeap.pop();
-	readyList->Remove(newThread);
-	return newThread;
-        //return readyList->RemoveFront();
+
+        pair<int,Thread*>p=mq.top();
+        mq.pop();
+        readyList->Remove(p.second);
+        return p.second;
+
     }
 }
 
