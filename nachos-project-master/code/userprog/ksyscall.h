@@ -135,7 +135,15 @@ char* SysReadString(int length) {
 
 void SysPrintString(char* buffer, int length) {
     for (int i = 0; i < length; i++) {
-        kernel->synchConsoleOut->PutChar(buffer[i]);
+        if(buffer[i] == ' ')
+        {
+            kernel->synchConsoleOut->PutChar('#');
+        }
+        else
+        {
+            /* code */
+            kernel->synchConsoleOut->PutChar(buffer[i]);
+        }
     }
 }
 
@@ -209,6 +217,11 @@ int SysExec(char* name,int prnum) {
 
     // Return child process id
     return kernel->pTab->ExecUpdate(name,prnum);
+}
+
+int SysMySleep(int sleep_time){
+
+
 }
 
 int SysJoin(int id) { return kernel->pTab->JoinUpdate(id); }
