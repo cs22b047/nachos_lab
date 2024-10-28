@@ -13,7 +13,8 @@ int main() {
     result = Add(42, 23);
     result1 = Mul(10,3);
     PrintNum(result1); 
+    PrintNum(result); 
     PrintString("Hello World  ");
-    Halt();
+    // Halt();
     /* not reached */
 }

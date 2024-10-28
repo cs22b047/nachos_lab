@@ -14,7 +14,7 @@ int main() {
         Write("Exec failed: ", 14, stdout);
         PrintNum(pid);
     }
-    pid2 = Exec("num_io2",10);
+    pid2 = Exec("num_io2",-10);
     if (pid2 < 0) {
         Write("Exec failed: ", 14, stdout);
         PrintNum(pid2);

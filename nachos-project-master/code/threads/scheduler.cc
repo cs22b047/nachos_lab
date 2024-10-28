@@ -52,8 +52,8 @@ Scheduler::~Scheduler() { delete readyList; }
 void Scheduler::ReadyToRun(Thread *thread) {
     ASSERT(kernel->interrupt->getLevel() == IntOff);
     DEBUG(dbgThread, "Putting thread on ready list: " << thread->getName());
-    mq.push({thread->prnum,thread});
     thread->setStatus(READY);
+    mq.push({thread->prnum,thread});
     readyList->Append(thread);
 }
 
