@@ -16,10 +16,9 @@
 // the data structures and operations needed to keep track of which
 // thread is running, and which threads are ready but not running.
 
-
 class Scheduler {
    public:
-	priority_queue<pair<int,Thread*>> mq;
+    priority_queue<pair<int, Thread*>> mq;
     Scheduler();   // Initialize list of ready threads
     ~Scheduler();  // De-allocate ready list
 
@@ -29,12 +28,15 @@ class Scheduler {
                               // list, if any, and return thread.
     void Run(Thread* nextThread, bool finishing);
     // Cause nextThread to start running
-    void CheckToBeDestroyed();  // Check if thread that had been
-                                // running needs to be deleted
-    void Print();               // Print contents of ready list
-
+    void CheckToBeDestroyed();   // Check if thread that had been
+                                 // running needs to be deleted
+    void Print();                // Print contents of ready list
+    void addInSleeplist(int t);  // pvn
+    void decrementingTime();
+      void AppendWait(int pid); 
     // SelfTest for scheduler is implemented in class Thread
-
+      List<pair<Thread*,int>*>* sleeplist;
+         List<pair<Thread*,int>*>* Waitlist;
    private:
     List<Thread*>* readyList;  // queue of threads that are ready to run,
                                // but not running

@@ -20,7 +20,7 @@ PTable::~PTable() {
     delete bmsem;
 }
 
-int PTable::ExecUpdate(char* name,int prnum) {
+int PTable::ExecUpdate(char* name, int prnum) {
     // Gọi mutex->P(); để giúp tránh tình trạng nạp 2 tiến trình cùng 1 lúc.
     bmsem->P();
 
@@ -88,8 +88,8 @@ int PTable::ExitUpdate(int exitcode) {
 
     // Gọi JoinRelease để giải phóng tiến trình cha đang đợi nó (nếu có)
     // và ExitWait() để xin tiến trình cha cho phép thoát.
-    pcb[id]->JoinRelease();
-    pcb[id]->ExitWait();
+    //pcb[id]->JoinRelease();  
+    // pcb[id]->ExitWait();  
 
     Remove(id);
     return exitcode;
@@ -130,6 +130,26 @@ bool PTable::IsExist(int pid) { return pcb[pid] != NULL; }
 
 void PTable::Remove(int pid) {
     if (pcb[pid] != NULL) {
+        ListElement<pair<Thread*, int>*>* temp =
+            kernel->scheduler->Waitlist->first;
+        while (temp != NULL) {
+            if (pid == temp->item->second) {
+                ListElement<pair<Thread*, int>*>* nextTemp = temp->next;
+
+                IntStatus currentLevel = kernel->interrupt->SetLevel(IntOff);
+
+                kernel->scheduler->ReadyToRun(temp->item->first);
+                kernel->interrupt->SetLevel(currentLevel);
+
+                temp->item->first->setStatus(READY);
+
+                kernel->scheduler->Waitlist->Remove(temp->item);
+                temp = nextTemp;
+            } else {
+                temp = temp->next;
+            }
+        }
+
         delete pcb[pid];
         pcb[pid] = NULL;
     }

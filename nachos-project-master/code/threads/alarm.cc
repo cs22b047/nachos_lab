@@ -41,6 +41,7 @@ Alarm::Alarm(bool doRandom) { timer = new Timer(doRandom, this); }
 //----------------------------------------------------------------------
 
 void Alarm::CallBack() {
+    kernel->scheduler->decrementingTime();
     Interrupt *interrupt = kernel->interrupt;
     MachineStatus status = interrupt->getStatus();
     if (status != IdleMode) {

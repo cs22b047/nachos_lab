@@ -31,6 +31,8 @@
 
 Scheduler::Scheduler() {
     readyList = new List<Thread *>;
+    Waitlist = new List<pair<Thread *, int> *>;
+    sleeplist = new List<pair<Thread *, int> *>;
     toBeDestroyed = NULL;
 }
 
@@ -40,6 +42,46 @@ Scheduler::Scheduler() {
 //----------------------------------------------------------------------
 
 Scheduler::~Scheduler() { delete readyList; }
+
+void Scheduler::addInSleeplist(int time) {
+    pair<Thread *, int> *p = new pair<Thread *, int>;
+    p->first = kernel->currentThread;
+    p->second = time;
+    // cout<<"Hello1"<<endl;
+    if (!sleeplist->IsInList(p)) {
+        sleeplist->Append(p);
+    }
+}
+void Scheduler::AppendWait(int pid) {
+    pair<Thread *, int> *p = new pair<Thread *, int>;
+    p->first = kernel->currentThread;
+    p->second = pid;
+    if (!Waitlist->IsInList(p)) {
+        Waitlist->Append(p);
+    }
+}
+
+void Scheduler::decrementingTime() {
+    ListElement<pair<Thread *, int> *> *s = sleeplist->first;
+
+    while (s != NULL) {
+        s->item->second--;
+        if (s->item->second <= 0) {
+            ListElement<pair<Thread *, int> *> *s1 = s->next;
+            IntStatus currentLevel = kernel->interrupt->SetLevel(IntOff);
+
+            ReadyToRun(s->item->first);
+            kernel->interrupt->SetLevel(currentLevel);
+            s->item->first->setStatus(READY);
+            // if(sleeplist->IsInList(s->item))
+            sleeplist->Remove(s->item);
+            s = s1;
+
+        } else {
+            s = s->next;
+        }
+    }
+}
 
 //----------------------------------------------------------------------
 // Scheduler::ReadyToRun
@@ -53,7 +95,7 @@ void Scheduler::ReadyToRun(Thread *thread) {
     ASSERT(kernel->interrupt->getLevel() == IntOff);
     DEBUG(dbgThread, "Putting thread on ready list: " << thread->getName());
     thread->setStatus(READY);
-    mq.push({thread->prnum,thread});
+    mq.push({thread->prnum, thread});
     readyList->Append(thread);
 }
 
@@ -71,12 +113,10 @@ Thread *Scheduler::FindNextToRun() {
     if (readyList->IsEmpty()) {
         return NULL;
     } else {
-
-        pair<int,Thread*>p=mq.top();
+        pair<int, Thread *> p = mq.top();
         mq.pop();
         readyList->Remove(p.second);
         return p.second;
-
     }
 }
 

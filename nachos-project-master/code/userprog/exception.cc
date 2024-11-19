@@ -334,6 +334,21 @@ void handle_SC_Exec() {
     return move_program_counter();
 }
 
+void handle_SC_MySleep() {
+    int character = kernel->machine->ReadRegister(4);
+    SysMySleep(character);
+    return move_program_counter();
+}
+
+
+void handle_SC_WaitUntil()   //pvn
+{
+  
+    int character = kernel->machine->ReadRegister(4);
+    SysWaitUntil(character);
+    return move_program_counter();
+} 
+
 /**
  * @brief handle System Call Join
  * @param id: thread id (get from R4)
@@ -472,6 +487,10 @@ void ExceptionHandler(ExceptionType which) {
                     return handle_SC_Seek();
                 case SC_Exec:
                     return handle_SC_Exec();
+                case SC_MySleep:
+                    return handle_SC_MySleep();
+                case SC_WaitUntil:
+                    return handle_SC_WaitUntil();
                 case SC_Join:
                     return handle_SC_Join();
                 case SC_Exit:

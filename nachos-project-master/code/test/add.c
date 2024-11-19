@@ -12,7 +12,7 @@ int main() {
     int result1;
     result = Add(42, 23);
     result1 = Mul(10,3);
-    PrintNum(result1); 
+    MySleep(200);
     PrintNum(result); 
     PrintString("Hello World  ");
     // Halt();

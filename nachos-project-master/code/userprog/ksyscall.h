@@ -219,10 +219,20 @@ int SysExec(char* name,int prnum) {
     return kernel->pTab->ExecUpdate(name,prnum);
 }
 
-int SysMySleep(int sleep_time){
-
-
+void SysMySleep(int sleep_time){
+    kernel->scheduler->addInSleeplist(sleep_time * 10000); 
+    IntStatus currentLevel = kernel->interrupt->SetLevel(IntOff);
+    kernel->currentThread->Sleep(false);
+    kernel->interrupt->SetLevel(currentLevel);
 }
+
+void SysWaitUntil(int pid)
+{
+    kernel->scheduler->AppendWait(pid);  //pvn
+    IntStatus currentLevel = kernel->interrupt->SetLevel(IntOff);
+    kernel->currentThread->Sleep(false);
+    kernel->interrupt->SetLevel(currentLevel);
+} 
 
 int SysJoin(int id) { return kernel->pTab->JoinUpdate(id); }
 

@@ -9,9 +9,5 @@
 
 int main(){
 
-	int i;
-	while(1){
-		for(i=0;i<300000;i++);
-		PrintString("In prog: [num_io]\n");
-	}
+	PrintString("In prog: [num_io]\n");
 }

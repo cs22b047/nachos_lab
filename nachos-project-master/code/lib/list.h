@@ -44,6 +44,8 @@ class ListIterator;
 template <class T>
 class List {
    public:
+     ListElement<T> *first;  // Head of the list, NULL if list is empty
+    ListElement<T> *last;
     List();           // initialize the list
     virtual ~List();  // de-allocate the list
 
@@ -72,8 +74,7 @@ class List {
     // verify module is working
 
    protected:
-    ListElement<T> *first;  // Head of the list, NULL if list is empty
-    ListElement<T> *last;   // Last element of list
+     // Last element of list
     int numInList;          // number of elements in list
 
     friend class ListIterator<T>;

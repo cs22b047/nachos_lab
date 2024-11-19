@@ -75,6 +75,22 @@ Exit:
 	j	$31
 	.end Exit
 
+	.globl MySleep
+	.ent	MySleep
+MySleep:
+	addiu $2,$0,SC_MySleep
+	syscall
+	j	$31
+	.end MySleep
+
+	.globl WaitUntil
+	.ent	WaitUntil
+WaitUntil:
+	addiu $2,$0,SC_WaitUntil
+	syscall
+	j	$31
+	.end WaitUntil
+
 	.globl Exec
 	.ent	Exec
 Exec:

@@ -14,7 +14,7 @@ int main() {
         Write("Exec failed: ", 14, stdout);
         PrintNum(pid);
     }
-    pid2 = Exec("num_io2",-10);
+    pid2 = Exec("num_io2",10);
     if (pid2 < 0) {
         Write("Exec failed: ", 14, stdout);
         PrintNum(pid2);
@@ -23,7 +23,10 @@ int main() {
     if (pid3 < 0) {
         Write("Exec failed: ", 14, stdout);
         PrintNum(pid3);
-    } 
+    }
+    // PrintString("Before\n");
+    // WaitUntil(pid);
+    // PrintString("After\n");
     while(1){
 	    for(i=0;i<300000;i++);
 	    PrintString("In prog2: [exec]\n");
