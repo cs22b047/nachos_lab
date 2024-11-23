@@ -2638,7 +2638,7 @@ scheduler.o: ../threads/scheduler.cc /usr/include/stdc-predef.h \
  ../machine/interrupt.h ../machine/callback.h ../machine/stats.h \
  ../threads/alarm.h ../machine/timer.h ../lib/bitmap.h \
  ../threads/stable.h ../threads/sem.h ../threads/ptable.h \
- ../threads/pcb.h
+ ../threads/pcb.h ../userprog/syscall.h ../userprog/errno.h
 synch.o: ../threads/synch.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../threads/synch.h ../threads/thread.h \
  ../lib/utility.h ../lib/sysdep.h /usr/include/c++/7/iostream \

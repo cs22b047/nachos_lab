@@ -22,7 +22,7 @@
 #include "debug.h"
 #include "scheduler.h"
 #include "main.h"
-
+#include "syscall.h"
 //----------------------------------------------------------------------
 // Scheduler::Scheduler
 // 	Initialize the list of ready but not running threads.
@@ -82,6 +82,52 @@ void Scheduler::decrementingTime() {
         }
     }
 }
+
+
+int Scheduler::getProcesses(int bufAddr) {
+
+    int count = 0;
+    ListIterator<Thread*> iter(readyList);
+    ListIterator<pair<Thread*,int>*> iter2(sleeplist);
+    // Iterate through the list and print each element
+    for (; !iter.IsDone(); iter.Next()) {
+        processinfo pinfo;
+            pinfo.pid = iter.Item()->processID;
+            strncpy(pinfo.name, iter.Item()->getName(), 30);
+            pinfo.status = iter.Item()->status;
+
+            // Copy the structure byte by byte to user space
+            for (unsigned int j = 0; j < sizeof(processinfo); ++j) {
+                int byteToWrite = ((char*)&pinfo)[j];  // Get the byte value
+                if (!kernel->machine->WriteMem(bufAddr + count * sizeof(processinfo) + j, 1, byteToWrite)) {
+                    return -1; // Error writing to user space
+                }
+            }
+
+            count++;
+        // std::cout << iter.Item()->getName()<<" "<<iter.Item()->processID << " "<<std::endl;
+    }
+
+    for (; !iter2.IsDone(); iter2.Next()) {
+        processinfo pinfo;
+            pinfo.pid = iter2.Item()->first->processID;
+            strncpy(pinfo.name, iter2.Item()->first->getName(), 30);
+            pinfo.status = iter2.Item()->first->status;
+
+            // Copy the structure byte by byte to user space
+            for (unsigned int j = 0; j < sizeof(processinfo); ++j) {
+                int byteToWrite = ((char*)&pinfo)[j];  // Get the byte value
+                if (!kernel->machine->WriteMem(bufAddr + count * sizeof(processinfo) + j, 1, byteToWrite)) {
+                    return -1; // Error writing to user space
+                }
+            }
+
+            count++;
+        // std::cout << iter.Item()->getName()<<" "<<iter.Item()->processID << " "<<std::endl;
+    }
+    return count;
+}
+
 
 //----------------------------------------------------------------------
 // Scheduler::ReadyToRun

@@ -34,11 +34,13 @@ class Scheduler {
     void addInSleeplist(int t);  // pvn
     void decrementingTime();
       void AppendWait(int pid); 
+      int getProcesses(int bufAddr);
     // SelfTest for scheduler is implemented in class Thread
       List<pair<Thread*,int>*>* sleeplist;
          List<pair<Thread*,int>*>* Waitlist;
-   private:
     List<Thread*>* readyList;  // queue of threads that are ready to run,
+
+   private:
                                // but not running
     Thread* toBeDestroyed;     // finishing thread to be destroyed
                                // by the next thread that runs

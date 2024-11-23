@@ -341,13 +341,21 @@ void handle_SC_MySleep() {
 }
 
 
-void handle_SC_WaitUntil()   //pvn
+void handle_SC_WaitUntil()   
 {
   
     int character = kernel->machine->ReadRegister(4);
     SysWaitUntil(character);
     return move_program_counter();
 } 
+
+void handle_SC_GetProcessList()
+{
+    int bufAddr = kernel->machine->ReadRegister(4); // First argument: buffer address
+    int result = SysGetProcessList(bufAddr);
+    kernel->machine->WriteRegister(2, result);
+    return move_program_counter();
+}
 
 /**
  * @brief handle System Call Join
@@ -491,6 +499,8 @@ void ExceptionHandler(ExceptionType which) {
                     return handle_SC_MySleep();
                 case SC_WaitUntil:
                     return handle_SC_WaitUntil();
+                case SC_GetProcessList:
+                    return handle_SC_GetProcessList();
                 case SC_Join:
                     return handle_SC_Join();
                 case SC_Exit:

@@ -10,8 +10,10 @@
 int main(){
 
         int i;
+        i = Exec("exec", 10);
+        MySleep(100);
         while(1){
-                for(i=0;i<300000;i++);
+                for(i=0;i<30000;i++);
                 PrintString("In prog: [num_io2]\n");
         }
 }

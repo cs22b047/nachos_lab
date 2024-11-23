@@ -9,11 +9,11 @@
 class PTable {
    private:
     Bitmap* bm;
-    PCB* pcb[MAX_PROCESS];
-    int psize;
     Semaphore* bmsem;
 
    public:
+    PCB* pcb[MAX_PROCESS];
+    int psize;
     PTable(int size);
     ~PTable();
     int ExecUpdate(char* name,int prnum);

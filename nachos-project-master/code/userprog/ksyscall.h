@@ -15,6 +15,7 @@
 #include "synchconsole.h"
 #include "ksyscallhelper.h"
 #include <stdlib.h>
+#include "list.h"
 
 void SysHalt() { 
 	
@@ -93,6 +94,15 @@ int SysReadNum() {
     return 0;
 }
 
+
+int SysGetProcessList(int bufAddr){
+    int processCount = 0;
+    IntStatus currentLevel = kernel->interrupt->SetLevel(IntOff);
+    processCount = kernel->scheduler->getProcesses(bufAddr);
+    kernel->interrupt->SetLevel(currentLevel);
+    return processCount;
+}
+
 void SysPrintNum(int num) {
     if (num == 0) return kernel->synchConsoleOut->PutChar('0');
 
@@ -137,7 +147,7 @@ void SysPrintString(char* buffer, int length) {
     for (int i = 0; i < length; i++) {
         if(buffer[i] == ' ')
         {
-            kernel->synchConsoleOut->PutChar('#');
+            kernel->synchConsoleOut->PutChar(' ');
         }
         else
         {

@@ -91,6 +91,14 @@ WaitUntil:
 	j	$31
 	.end WaitUntil
 
+	.globl GetProcessList
+	.ent	GetProcessList
+GetProcessList:
+	addiu $2,$0,SC_GetProcessList
+	syscall
+	j	$31
+	.end GetProcessList
+
 	.globl Exec
 	.ent	Exec
 Exec:

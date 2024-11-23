@@ -51,6 +51,7 @@
 #define SC_Mul 55
 #define SC_MySleep 56
 #define SC_WaitUntil 57
+#define SC_GetProcessList 58
 #ifndef IN_ASM
 
 /* The system call interface.  These are the operations the Nachos
@@ -63,12 +64,24 @@
  * from the system call entry point in exception.cc.
  */
 
+
+// Lab_exam
+struct processinfo {
+    int pid;
+    char name[30];
+    int status;
+};
+
+
+
 /* Stop Nachos, and print out performance stats */
 void Halt();
 
 /*
  * Add the two operants and return the result
  */
+
+int GetProcessList(int bufAddr);
 
 int Add(int op1, int op2);
 int Mul(int op1, int op2);
