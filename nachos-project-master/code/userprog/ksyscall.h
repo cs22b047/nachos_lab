@@ -97,9 +97,37 @@ int SysReadNum() {
 
 int SysGetProcessList(int bufAddr){
     int processCount = 0;
-    IntStatus currentLevel = kernel->interrupt->SetLevel(IntOff);
-    processCount = kernel->scheduler->getProcesses(bufAddr);
-    kernel->interrupt->SetLevel(currentLevel);
+
+    kernel->pTab->bmsem->P();
+
+    // Iterate through the process table and fill the buffer with process info
+    for (int i = 1; i < kernel->pTab->psize; i++) {
+        if (kernel->pTab->pcb[i] != NULL) {
+            processinfo pinfo;
+            pinfo.pid = kernel->pTab->pcb[i]->thread->processID;
+            strncpy(pinfo.name, kernel->pTab->pcb[i]->GetFileName(), sizeof(pinfo.name));
+            pinfo.status = kernel->pTab->pcb[i]->thread->status; // or another status indicator
+
+            // Copy process info to user space
+            
+            for (unsigned int j = 0; j < sizeof(processinfo); ++j) {
+                int byteToWrite = ((char*)&pinfo)[j];  // Get the byte value
+                if (!kernel->machine->WriteMem(bufAddr + processCount * sizeof(processinfo) + j, 1, byteToWrite)) {
+                    kernel->pTab->bmsem->V(); // Release lock before returning
+
+                    return -1; // Error writing to user space
+                }
+            }
+            processCount++;
+        }
+    }
+
+    kernel->pTab->bmsem->V(); // Release the lock
+
+
+    // IntStatus currentLevel = kernel->interrupt->SetLevel(IntOff);
+    // processCount = kernel->scheduler->getProcesses(bufAddr);
+    // kernel->interrupt->SetLevel(currentLevel);
     return processCount;
 }
 

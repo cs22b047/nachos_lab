@@ -74,6 +74,7 @@ int PCB::Exec(char* filename, int id, int prnum) {
 
     multex->V();
     // Trả về id.
+    this->status = thread->status;
     return id;
 }
 

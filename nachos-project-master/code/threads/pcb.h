@@ -6,14 +6,14 @@ class PCB {
     Semaphore *joinsem;
     Semaphore *exitsem;
     Semaphore *multex;
-
     int exitcode;
     int numwait;
 
-    Thread *thread;
     char filename[128];
 
    public:
+    Thread *thread;
+    int status;
     int parentID;
     int processID;
     PCB();
@@ -23,6 +23,7 @@ class PCB {
     int Exec(char *filename, int pid, int prnum);
     int GetID();
     int GetNumWait();
+    int getStatus();
 
     void JoinWait();
     void ExitWait();

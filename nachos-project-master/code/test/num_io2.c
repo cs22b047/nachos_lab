@@ -10,7 +10,7 @@
 int main(){
 
         int i;
-        i = Exec("exec", 10);
+        // i = Exec("exec", 10);
         MySleep(100);
         while(1){
                 for(i=0;i<30000;i++);
