@@ -44,6 +44,12 @@ class AddrSpace {
     queue<int> Ptqueue;
     int Max;
     map<int, int> Pmap;
+    char swapfileName[8];
+    void SwapOutPage(int victimPageIndex);
+    int ChooseVictimPage();
+    void SwapInPage(unsigned int vpn);
+
+    OpenFile *swapFile;
     // void InitRegisters();
    private:
 

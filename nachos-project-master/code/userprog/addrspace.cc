@@ -21,6 +21,9 @@
 #include "machine.h"
 #include "noff.h"
 #include "synch.h"
+#include <stdlib.h>
+#include <stdio.h>
+
 
 //----------------------------------------------------------------------
 // SwapHeader
@@ -104,6 +107,12 @@ AddrSpace::~AddrSpace() {
 //----------------------------------------------------------------------
 
 AddrSpace::AddrSpace(char *fileName) {
+
+    OpenFile *swapFile;
+    sprintf(swapfileName, "swap%3d", rand()%100);
+    kernel->fileSystem->Create(swapfileName);
+    swapFile =kernel->fileSystem->Open(swapfileName);
+    ASSERT( swapFile != NULL);
     Max = 8;
     fileNameMain = fileName;
     OpenFile *executable = kernel->fileSystem->Open(fileName);
@@ -197,6 +206,10 @@ void AddrSpace::addpage(unsigned int badVAddr) {
     pageTable[virpageno].physicalPage = kernel->gPhysPageBitMap->FindAndSet();
     pageTable[virpageno].valid = TRUE;
 
+    if (!pageTable[virpageno].swapped) {
+            cout<<"\n---------------swap in---------------"<<"\n"<<endl;
+            SwapInPage(virpageno);  // Handle the page fault
+    }
     //Pmap[virpageno] = pageTable[virpageno].physicalPage;
     
 
@@ -353,3 +366,48 @@ ExceptionType AddrSpace::Translate(unsigned int vaddr, unsigned int *paddr,
 
     return NoException;
 }
+
+int AddrSpace::ChooseVictimPage() {
+    static int pointer = 0; // For FIFO
+    int victim = pointer;
+    pointer = (pointer + 1) % numPages;
+    return victim;
+}
+
+void AddrSpace::SwapInPage(unsigned int vpn) {
+    int freePage = kernel->gPhysPageBitMap->FindAndSet();
+
+    if (freePage == -1) {
+        // No free page; swap out a victim page
+        SwapOutPage(ChooseVictimPage());
+        freePage = kernel->gPhysPageBitMap->FindAndSet();
+    }
+
+    // Read the page from the swap file
+    swapFile->ReadAt(
+        &(kernel->machine->mainMemory[freePage * PageSize]),
+        PageSize,
+        vpn * PageSize);
+
+    // Update page table
+    pageTable[vpn].physicalPage = freePage;
+    pageTable[vpn].valid = TRUE;
+}
+
+void AddrSpace::SwapOutPage(int victimPageIndex) {
+    unsigned int victimPhysicalPage = pageTable[victimPageIndex].physicalPage;
+
+    // Write page data to swap file
+    swapFile->WriteAt(
+        &(kernel->machine->mainMemory[victimPhysicalPage * PageSize]),
+        PageSize,
+        victimPageIndex * PageSize);
+
+    // Mark page as swapped
+    pageTable[victimPageIndex].valid = FALSE;
+    pageTable[victimPageIndex].physicalPage = -1;
+
+    // Free physical memory
+    kernel->gPhysPageBitMap->Clear(victimPhysicalPage);
+}
+
