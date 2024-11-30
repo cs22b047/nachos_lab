@@ -449,6 +449,9 @@ void ExceptionHandler(ExceptionType which) {
             DEBUG(dbgSys, "Switch to system mode\n");
             break;
         case PageFaultException:
+            cout<<"\n"<<"====================================Page Fault===================================="<<"\n"<<endl;
+            kernel->currentThread->space->addpage(kernel->machine->ReadRegister(39));
+            return;
         case ReadOnlyException:
         case BusErrorException:
         case AddressErrorException:

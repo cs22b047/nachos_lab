@@ -15,13 +15,18 @@
 
 #include "copyright.h"
 #include "filesys.h"
+#include <queue>
+#include <map>
+
 
 #define UserStackSize 1024  // increase this as necessary!
 
 class AddrSpace {
    public:
+   char * fileNameMain;
     AddrSpace();                // Create an address space.
     AddrSpace(char *fileName);  // Load a program into addr space from
+    void addpage(unsigned int x);
                                 // a file
     ~AddrSpace();               // De-allocate an address space
 
@@ -36,8 +41,12 @@ class AddrSpace {
     // to physical address _paddr_. _mode_
     // is 0 for Read, 1 for Write.
     ExceptionType Translate(unsigned int vaddr, unsigned int *paddr, int mode);
+    queue<int> Ptqueue;
+    int Max;
+    map<int, int> Pmap;
     // void InitRegisters();
    private:
+
     TranslationEntry *pageTable;  // Assume linear page table translation
                                   // for now!
     unsigned int numPages;        // Number of pages in the virtual

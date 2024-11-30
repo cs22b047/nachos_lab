@@ -1,6 +1,6 @@
 // sysdep.cc
 //	Implementation of system-dependent interface.  Nachos uses the
-//	routines defined here, rather than directly calling the UNIX library,
+//	routines defined here, rather than directly calling the UNIX li`rary,
 //	to simplify porting between versions of UNIX, and even to
 //	other systems, such as MSDOS.
 //

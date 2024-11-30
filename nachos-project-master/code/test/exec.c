@@ -27,33 +27,35 @@ int main() {
         Write("Exec failed: ", 14, stdout);
         PrintNum(pid3);
     }
-    pid2 = Exec("num_io2", 10);
-    if (pid2 < 0) {
-        Write("Exec failed: ", 14, stdout);
-        PrintNum(pid2);
-    }
+    // pid2 = Exec("num_io2", 10);
+    // if (pid2 < 0) {
+    //     Write("Exec failed: ", 14, stdout);
+    //     PrintNum(pid2);
+    // }
 
     // PrintNum(numProcesses);
-    // PrintString("Before\n");
-    // WaitUntil(pid);
+    WaitUntil(pid);
+    PrintString("Before\n");
     // PrintString("After\n");
+
+
     while (1) {
         for (i = 0; i < 300000; i++);
-        numProcesses = GetProcessList((int)buf);
+        // numProcesses = GetProcessList((int)buf);
 
-        for (i = 0; i < numProcesses; i++) {
-            PrintString("Name: ");
-            PrintString(buf[i].name);
-            PrintString(", ");
-            PrintString("status: ");
-            PrintNum(buf[i].status);
-            PrintString(", ");
-            PrintString("pid: ");
-            PrintNum(buf[i].pid);
-            PrintString("\n");
-            // printf("Process %d: PID = %d, Name = %s, Status = %d\n",
-            //        i, buf[i].pid, buf[i].name, buf[i].status);
-        }
+        // for (i = 0; i < numProcesses; i++) {
+        //     PrintString("Name: ");
+        //     PrintString(buf[i].name);
+        //     PrintString(", ");
+        //     PrintString("status: ");
+        //     PrintNum(buf[i].status);
+        //     PrintString(", ");
+        //     PrintString("pid: ");
+        //     PrintNum(buf[i].pid);
+        //     PrintString("\n");
+        //     // printf("Process %d: PID = %d, Name = %s, Status = %d\n",
+        //     //        i, buf[i].pid, buf[i].name, buf[i].status);
+        // }
         PrintString("In prog: [exec]\n");
     }
 }
